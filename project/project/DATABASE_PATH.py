@@ -1,0 +1,1 @@
+PATH = "C:/Users/Berkay/Documents/GitHub/WebTechnologies_project/database/AWT_project_db.db"
