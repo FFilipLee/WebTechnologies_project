@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     name = models.CharField(max_length=100)
@@ -10,7 +11,7 @@ class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     content = models.TextField()
-    postDate = models.DateTimeField()
+    postDate = models.DateTimeField(default=timezone.now)
     closed = models.BooleanField(default=False)
     views = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
@@ -19,7 +20,7 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
-    postDate = models.DateField()
+    postDate = models.DateTimeField(default=timezone.now)
     views = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)
@@ -29,7 +30,7 @@ class Comment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     content = models.TextField()
-    postDate = models.TextField()
+    postDate = models.DateTimeField(default=timezone.now)
     views = models.IntegerField(default=0)
 
 class QuestionTag(models.Model):
