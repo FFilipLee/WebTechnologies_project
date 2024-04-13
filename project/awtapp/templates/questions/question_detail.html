@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ question.title }}</title>
+</head>
+<body>
+    <h1>{{ question.title }}</h1>
+    <p>{{ question.content }}</p>
+    <p>Posted on: {{ question.postDate }}</p>
+    <p>Views: {{ question.views }} | Upvotes: {{ question.upvotes }} | Downvotes: {{ question.downvotes }}</p>
+    <a href="{% url 'question_list' %}">Back to questions list</a>
+
+    <h2>Answers</h2>
+    {% for answer in answers %}
+        <div>
+            <p>{{ answer.content }}</p>
+            <p>Posted on: {{ answer.postDate }}</p>
+            <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+            <p> ------------------------------------------------------------------- </p>
+            <!-- Display comments for this answer -->
+    {% endfor %}
+</body>
+</html>

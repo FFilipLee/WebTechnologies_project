@@ -18,8 +18,8 @@ class Question(models.Model):
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    content = models.BinaryField()
-    postDate = models.TextField()
+    content = models.TextField()
+    postDate = models.DateField()
     views = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
     downvotes = models.IntegerField(default=0)

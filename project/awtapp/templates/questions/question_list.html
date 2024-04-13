@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+</head>
+<body>
+    <div>
+        <input type="text" placeholder="Search... (non-functional)">
+    </div>
+    <h1>Questions</h1>
+    {% for question in questions %}
+        <div>
+            <h2><a href="{% url 'question_detail' question.id %}">{{ question.title }}</a></h2>
+            <p>{{ question.content|truncatewords:30 }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
