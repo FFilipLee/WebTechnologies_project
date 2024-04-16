@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import AskQuestionForm
+from .forms import AskQuestionForm, RegistrationForm
 from .models import Answer, Question, Comment
+from django.contrib.auth import authenticate, login, logout
 
 def question_list(request):
     questions = Question.objects.all()
@@ -33,3 +34,20 @@ def ask_question(request):
 def home(request):
     questions = Question.objects.all()
     return render(request, 'home/home.html', {'questions': questions})
+
+def sign_up(request):
+    print("view")
+    if request.method == 'POST':
+        print("post")
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            print("valid")
+            user = form.save()
+            login(request, user)
+            return redirect('/search')
+    else:
+        print("get")
+        form = RegistrationForm()
+        context = {}
+        context['form'] = form
+        return render(request, 'sign_up.html', context)
