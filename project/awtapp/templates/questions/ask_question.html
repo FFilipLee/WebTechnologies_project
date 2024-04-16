@@ -1,15 +1,5 @@
-<!-- ask_question.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ask a Question</title>
-</head>
-<body>
-    <h2>Ask a Question</h2>
-    <form action="{% url 'ask_question' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Ask Question</button>
+</form>
