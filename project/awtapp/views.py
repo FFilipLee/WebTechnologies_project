@@ -1,15 +1,17 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import AskQuestionForm, RegistrationForm
-from .models import Answer, Question, Comment
+from .forms import PostQuestionForm, RegistrationForm
+from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import AskQuestionForm
+from django.db.models import Q
+
 
 def question_list(request):
     questions = Question.objects.all()
     return render(request, 'questions/question_list.html', {'questions': questions})
+
 
 def question_detail(request, pk):
     question = get_object_or_404(Question, id=pk)
@@ -20,15 +22,47 @@ def question_detail(request, pk):
     return render(request, 'questions/question_detail.html', {'question': question, 'answers': answers, 'answer_comments': answer_comments})
 
 
-def ask_question(request):
+def post_question(request):
     if request.method == 'POST':
-        form = AskQuestionForm(request.POST)
+        form = PostQuestionForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('some_view_name')
     else:
-        form = AskQuestionForm()
-    return render(request, 'questions/ask_question.html', {'form': form})
+        form = PostQuestionForm()
+    return render(request, 'questions/post_question.html', {'form': form})
+
+def post_answer(request):
+    if request.method == 'POST':
+        form = PostAnswerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('some_view_name')
+    else:
+        form = PostAnswerForm()
+    return render(request, 'questions/post_answer.html', {'form': form})
+
+def post_comment(request):
+    if request.method == 'POST':
+        form = PostCommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('some_view_name')
+    else:
+        form = PostCommentForm()
+    return render(request, 'questions/post_comment.html', {'form': form})
+
+def search_question(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        questions = Question.objects.only('id', 'title').filter(title__icontains=query)
+        return render(request, 'search_q_result.html', {'questions': questions})
+    
+def search_user(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        questions = User.objects.only('name', 'surname').filter(Q(name__icontains=query) | Q(surname__icontains=query))
+        return render(request, 'search_u_result.html', {'questions': questions})
 
 def home(request):
     questions = Question.objects.all()

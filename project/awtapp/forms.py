@@ -10,7 +10,7 @@ class RegistrationForm(UserCreationForm):
         fields = ['username', 'password1', 'password2']
 
 
-class AskQuestionForm(forms.ModelForm):
+class PostQuestionForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
 
     class Meta:

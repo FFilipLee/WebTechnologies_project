@@ -74,13 +74,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+from . import DATABASE_PATH
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': "C:/Users/Berkay/Documents/GitHub/WebTechnologies_project/database/AWT_project_db.db"
+        'NAME': DATABASE_PATH.PATH
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
