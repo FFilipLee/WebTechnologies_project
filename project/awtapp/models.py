@@ -18,6 +18,7 @@ class Question(models.Model):
     downvotes = models.IntegerField(default=0)
 
 class Answer(models.Model):
+    #user missing
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     postDate = models.DateTimeField(default=timezone.now)

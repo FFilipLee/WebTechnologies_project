@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': "C:/Users/Berkay/Documents/GitHub/WebTechnologies_project/database/AWT_project_db.db"
+        'NAME': "C:/Users/Berkay/Documents/GitHub/WebTechnologies_project/database/new_AWT_project_db.db"
     }
 }
 
