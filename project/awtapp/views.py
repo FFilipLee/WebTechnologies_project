@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import PostQuestionForm, RegistrationForm
+from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm, RegistrationForm
 from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -58,11 +58,39 @@ def search_question(request):
         questions = Question.objects.only('id', 'title').filter(title__icontains=query)
         return render(request, 'search_q_result.html', {'questions': questions})
     
+def delete_question(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        if Question.objects.filter(id=query).exists():
+            Question.objects.filter(id=query).delete()
+        return render(request, 'home.html', {})
+
+def delete_answer(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        if Answer.objects.filter(id=query).exists():
+            Answer.objects.filter(id=query).delete()
+        return render(request, 'home.html', {})
+
+def delete_comment(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        if Comment.objects.filter(id=query).exists():
+            Comment.objects.filter(id=query).delete()
+        return render(request, 'home.html', {})
+    
 def search_user(request):
     if 'query' in request.GET:
         query = request.GET['query']
         questions = User.objects.only('name', 'surname').filter(Q(name__icontains=query) | Q(surname__icontains=query))
         return render(request, 'search_u_result.html', {'questions': questions})
+    
+def delete_user(request):
+    if 'query' in request.GET:
+        query = request.GET['query']
+        if User.objects.filter(id=query).exists():
+            User.objects.filter(id=query).delete()
+        return render(request, 'home.html', {})
 
 def home(request):
     questions = Question.objects.all()
