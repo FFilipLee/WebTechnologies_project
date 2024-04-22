@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Answer</title>
+</head>
+<body>
+    <h1>Update Answer</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required>{{ answer.content }}</textarea><br>
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
