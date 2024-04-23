@@ -1,3 +1,4 @@
+from pprint import pprint
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
@@ -6,32 +7,39 @@ from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.db.models import Q
-
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from .models import Question, Answer, Comment
 
 def question_list(request):
     questions = Question.objects.all()
     return render(request, 'questions/question_list.html', {'questions': questions})
 
-
 def question_detail(request, pk):
     question = get_object_or_404(Question, id=pk)
     answers = Answer.objects.filter(question=question)
+    
     answer_comments = {}
     for answer in answers:
         answer_comments[answer] = Comment.objects.filter(answer=answer)
+    pprint(answer_comments)
     return render(request, 'questions/question_detail.html', {'question': question, 'answers': answers, 'answer_comments': answer_comments})
 
+
+@login_required
 def post_question(request):
     if request.method == 'POST':
-        form = PostQuestionForm(request.user, request.POST)
+        form = PostQuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
-            question.user = request.user
+            user_instance = User.objects.get(pk=request.user.pk)  # Retrieve the User instance
+            question.user = user_instance  # Assign the User instance
             question.save()
-            return redirect('some_view_name')
+            return redirect('home')
     else:
-        form = PostQuestionForm(request.user)  
-    return render(request, 'questions/post_question.html', {'form': form})
+        form = PostQuestionForm()  
+    return render(request, 'create_question.html', {'form': form})
 
 def post_answer(request):
     if request.method == 'POST':

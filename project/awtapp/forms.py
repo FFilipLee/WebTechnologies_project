@@ -3,24 +3,28 @@ from .models import Question, User, Answer, Comment
 from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django import forms 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class PostQuestionForm(forms.ModelForm):
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(PostQuestionForm, self).__init__(*args, **kwargs)
-        self.fields['user'].initial = user
-        self.fields['user'].widget.attrs['readonly'] = True  # Make it read-only
-
-    user = forms.ModelChoiceField(queryset=User.objects.none(), label="Select User")
+        self.user = user  # Store the user object
+        if user:
+            self.fields['user'].initial = user
+            self.fields['user'].widget.attrs['readonly'] = True
 
     class Meta:
         model = Question
-        fields = ['user', 'title', 'content']
+        fields = ['title', 'content']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Enter your question title here'}),
             'content': forms.Textarea(attrs={'placeholder': 'Write your question details here'}),
         }
 
-    
+
 class PostAnswerForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
     question = forms.ModelChoiceField(queryset=Question.objects.all(), label="Select Question")
@@ -44,9 +48,6 @@ class PostCommentForm(forms.ModelForm):
         }
 
 
-from django import forms 
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 class SignupForm(UserCreationForm):
     class Meta:
