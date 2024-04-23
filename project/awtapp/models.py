@@ -40,3 +40,19 @@ class Comment(models.Model):
 class QuestionTag(models.Model):
     tag = models.CharField(max_length=100)
     questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class QuestionLikes(models.Model):
+    questionId = models.ForeignKey(Question, primary_key=True, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+
+class QuestionDislikes(models.Model):
+    questionId = models.ForeignKey(Question, primary_key=True, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+
+class AnswerLikes(models.Model):
+    questionId = models.ForeignKey(Answer, primary_key=True, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+
+class AnswerDislikes(models.Model):
+    questionId = models.ForeignKey(Answer, primary_key=True, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
