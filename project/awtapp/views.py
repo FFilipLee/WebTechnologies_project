@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm, RegistrationForm
+from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm
 from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -96,19 +96,37 @@ def home(request):
     questions = Question.objects.all()
     return render(request, 'home/home.html', {'questions': questions})
 
-def sign_up(request):
-    print("view")
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout 
+from .forms import SignupForm, LoginForm
+
+def index(request):
+    return render(request, 'index.html')
+
+def user_signup(request):
     if request.method == 'POST':
-        print("post")
-        form = RegistrationForm(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
-            print("valid")
-            user = form.save()
-            login(request, user)
-            return redirect('/search')
+            form.save()
+            return redirect('login')
     else:
-        print("get")
-        form = RegistrationForm()
-        context = {}
-        context['form'] = form
-        return render(request, 'sign_up.html', context)
+        form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)    
+                return redirect('home')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')

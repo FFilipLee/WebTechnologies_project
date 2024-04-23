@@ -4,12 +4,6 @@ from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-class RegistrationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password1', 'password2']
-
-
 class PostQuestionForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
 
@@ -42,3 +36,17 @@ class PostCommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'placeholder': 'Write your comment here'}),
         }
+
+
+from django import forms 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class SignupForm(UserCreationForm):
+    class Meta:
+        model = User 
+        fields = ['username', 'password1', 'password2']
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
