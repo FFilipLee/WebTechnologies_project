@@ -24,16 +24,12 @@ class PostQuestionForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'placeholder': 'Write your question details here'}),
         }
 
-
 class PostAnswerForm(forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
-    question = forms.ModelChoiceField(queryset=Question.objects.all(), label="Select Question")
-
     class Meta:
         model = Answer
-        fields = ['user', 'question', 'content']
+        fields = ['content']
         widgets = {
-            'content': forms.Textarea(attrs={'placeholder': 'Write your answer here'}),
+            'content': forms.Textarea(attrs={'placeholder': 'Write your answer here...'}),
         }
 
 class PostCommentForm(forms.ModelForm):

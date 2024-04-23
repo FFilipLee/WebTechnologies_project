@@ -13,6 +13,15 @@
     <p>Views: {{ question.views }} | Upvotes: {{ question.upvotes }} | Downvotes: {{ question.downvotes }}</p>
     <a href="{% url 'question_list' %}">Back to questions list</a>
 
+    <h2>Post Your Answer</h2>
+        <form method="post" action="{% url 'post_answer' question.id %}">
+            {% csrf_token %}
+            {{ answer_form.as_p }}
+            <button type="submit">Post Answer</button>
+        </form>
+    </body>
+    </html>
+
     <!-- Render answers -->
     <h2>Answers</h2>
     {% for answer in answers %}
@@ -20,20 +29,8 @@
             <p>{{ answer.content }}</p>
             <p>Posted on: {{ answer.postDate }}</p>
             <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
-            
-            <!-- Render comments for this answer -->
-            <h3>Comments</h3>
-            {% for comment in answer_comments|get_item:answer %}
-                <p>{{ comment.content }}</p>
-                <p>Posted on: {{ comment.postDate }}</p>
-                <!-- Add more details if needed -->
-            {% empty %}
-                <p>No comments for this answer</p>
-            {% endfor %}
+            <p> ----------------------------------------------------------------- </p>
         </div>
     {% empty %}
         <p>No answers yet</p>
     {% endfor %}
-</body>
-</html>
-

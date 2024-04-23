@@ -41,16 +41,29 @@ def post_question(request):
         form = PostQuestionForm()  
     return render(request, 'create_question.html', {'form': form})
 
-def post_answer(request):
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from .models import Answer
+from .forms import PostAnswerForm  
+
+@login_required
+def post_answer(request, question_id):
     if request.method == 'POST':
         form = PostAnswerForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('some_view_name')
+            answer = form.save(commit=False)
+            answer.user = request.user  
+            answer.question_id = question_id  
+            answer.postDate = timezone.now()  
+            answer.save()
+            return redirect('question_detail', pk=question_id)
     else:
-        form = PostAnswerForm()
-    return render(request, 'questions/post_answer.html', {'form': form})
+        form = PostAnswerForm()  
+    return render(request, 'create_answer.html', {'form': form})
 
+
+@login_required
 def post_comment(request):
     if request.method == 'POST':
         form = PostCommentForm(request.POST)
