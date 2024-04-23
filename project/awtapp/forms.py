@@ -5,7 +5,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 class PostQuestionForm(forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
+    def __init__(self, user, *args, **kwargs):
+        super(PostQuestionForm, self).__init__(*args, **kwargs)
+        self.fields['user'].initial = user
+        self.fields['user'].widget.attrs['readonly'] = True  # Make it read-only
+
+    user = forms.ModelChoiceField(queryset=User.objects.none(), label="Select User")
 
     class Meta:
         model = Question
@@ -14,6 +19,7 @@ class PostQuestionForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'Enter your question title here'}),
             'content': forms.Textarea(attrs={'placeholder': 'Write your question details here'}),
         }
+
     
 class PostAnswerForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")

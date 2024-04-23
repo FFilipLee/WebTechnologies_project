@@ -21,15 +21,16 @@ def question_detail(request, pk):
         answer_comments[answer] = Comment.objects.filter(answer=answer)
     return render(request, 'questions/question_detail.html', {'question': question, 'answers': answers, 'answer_comments': answer_comments})
 
-
 def post_question(request):
     if request.method == 'POST':
-        form = PostQuestionForm(request.POST)
+        form = PostQuestionForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            question = form.save(commit=False)
+            question.user = request.user
+            question.save()
             return redirect('some_view_name')
     else:
-        form = PostQuestionForm()
+        form = PostQuestionForm(request.user)  
     return render(request, 'questions/post_question.html', {'form': form})
 
 def post_answer(request):
