@@ -42,17 +42,36 @@ class QuestionTag(models.Model):
     questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
 
 class QuestionLikes(models.Model):
-    questionId = models.ForeignKey(Question, primary_key=True, on_delete=models.CASCADE)
-    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+    questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['questionId', 'userId'], name='unique_key_pair_ql')
+        ]
+
 
 class QuestionDislikes(models.Model):
-    questionId = models.ForeignKey(Question, primary_key=True, on_delete=models.CASCADE)
-    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+    questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['questionId', 'userId'], name='unique_key_pair_qd')
+        ]
+
 
 class AnswerLikes(models.Model):
-    questionId = models.ForeignKey(Answer, primary_key=True, on_delete=models.CASCADE)
-    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+    questionId = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['questionId', 'userId'], name='unique_key_pair_al')
+        ]
+
 
 class AnswerDislikes(models.Model):
-    questionId = models.ForeignKey(Answer, primary_key=True, on_delete=models.CASCADE)
-    userId = models.ForeignKey(User, primary_key=True, on_delete=models.CASCADE)
+    questionId = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['questionId', 'userId'], name='unique_key_pair_ad')
+        ]
