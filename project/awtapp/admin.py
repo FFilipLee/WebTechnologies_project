@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Question, Answer, Comment, QuestionTag, QuestionLikes, QuestionDislikes, AnswerLikes, AnswerDislikes
+from .models import User, Question, Answer, Comment, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -21,18 +21,18 @@ class CommentAdmin(admin.ModelAdmin):
 class QuestionTagAdmin(admin.ModelAdmin):
     list_display = ('tag', 'questionId')
 
-@admin.register(QuestionLikes)
-class QuestionLikesAdmin(admin.ModelAdmin):
+@admin.register(QuestionLike)
+class QuestionLikeAdmin(admin.ModelAdmin):
     list_display = ('questionId', 'userId')
 
-@admin.register(QuestionDislikes)
-class QuestionDislikesAdmin(admin.ModelAdmin):
+@admin.register(QuestionDislike)
+class QuestionDislikeAdmin(admin.ModelAdmin):
     list_display = ('questionId', 'userId')
 
-@admin.register(AnswerLikes)
-class AnswerLikesAdmin(admin.ModelAdmin):
+@admin.register(AnswerLike)
+class AnswerLikeAdmin(admin.ModelAdmin):
     list_display = ('questionId', 'userId')
 
-@admin.register(AnswerDislikes)
-class AnswerDislikesAdmin(admin.ModelAdmin):
+@admin.register(AnswerDislike)
+class AnswerDislikeAdmin(admin.ModelAdmin):
     list_display = ('questionId', 'userId')

@@ -41,7 +41,7 @@ class QuestionTag(models.Model):
     tag = models.CharField(max_length=100)
     questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
 
-class QuestionLikes(models.Model):
+class QuestionLike(models.Model):
     questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
@@ -50,7 +50,7 @@ class QuestionLikes(models.Model):
         ]
 
 
-class QuestionDislikes(models.Model):
+class QuestionDislike(models.Model):
     questionId = models.ForeignKey(Question, on_delete=models.CASCADE)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
@@ -59,7 +59,7 @@ class QuestionDislikes(models.Model):
         ]
 
 
-class AnswerLikes(models.Model):
+class AnswerLike(models.Model):
     questionId = models.ForeignKey(Answer, on_delete=models.CASCADE)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
@@ -68,7 +68,7 @@ class AnswerLikes(models.Model):
         ]
 
 
-class AnswerDislikes(models.Model):
+class AnswerDislike(models.Model):
     questionId = models.ForeignKey(Answer, on_delete=models.CASCADE)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:

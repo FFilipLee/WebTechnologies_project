@@ -9,7 +9,7 @@
         <input type="text" placeholder="Search... (non-functional)">
     </div>
     <!-- Button to Ask a Question -->
-    <a href="{% url 'ask_question' %}" style="position: absolute; top: 10px; right: 10px;">Ask a Question</a>
+    <a href="{% url 'post_question' %}" style="position: absolute; top: 10px; right: 10px;">Ask a Question</a>
 
     <h1>Questions</h1>
     {% for question in questions %}
