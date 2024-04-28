@@ -1,36 +1,93 @@
-<!-- question_detail.html -->
 {% load custom_filters %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ question.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre-icons.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+        }
+
+        .container {
+            margin: 20px auto;
+        }
+
+        .question {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-card {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-card p {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ question.title }}</h1>
-    <p>{{ question.content }}</p>
-    <p>Posted on: {{ question.postDate }}</p>
-    <p>Views: {{ question.views }} | Upvotes: {{ question.upvotes }} | Downvotes: {{ question.downvotes }}</p>
-    <a href="{% url 'question_list' %}">Back to questions list</a>
-
-    <h2>Post Your Answer</h2>
-        <form method="post" action="{% url 'post_answer' question.id %}">
-            {% csrf_token %}
-            {{ answer_form.as_p }}
-            <button type="submit">Post Answer</button>
-        </form>
-    </body>
-    </html>
-
-    <!-- Render answers -->
-    <h2>Answers</h2>
-    {% for answer in answers %}
-        <div>
-            <p>{{ answer.content }}</p>
-            <p>Posted on: {{ answer.postDate }}</p>
-            <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
-            <p> ----------------------------------------------------------------- </p>
+    <div class="container">
+        <div class="question">
+            <h1>{{ question.title }}</h1>
+            <p>{{ question.content }}</p>
+            <p>Posted on: {{ question.postDate }}</p>
+            <p>Views: <span id="questionViews">{{ question.views }}</span> | Upvotes: {{ question.upvotes }} | Downvotes: {{ question.downvotes }}</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">Back to questions list</a>
         </div>
-    {% empty %}
-        <p>No answers yet</p>
-    {% endfor %}
+
+        <div class="question">
+            <h2>Post Your Answer</h2>
+            <form method="post" action="{% url 'post_answer' question.id %}">
+                {% csrf_token %}
+                {{ answer_form.as_p }}
+                <button type="submit" class="btn btn-primary">Post Answer</button>
+            </form>
+        </div>
+
+        <div class="question">
+            <h2>Answers</h2>
+            <div id="answers">
+                {% for answer in answers %}
+                    <div class="answer-card">
+                        <p>{{ answer.content }}</p>
+                        <p>Posted on: {{ answer.postDate }}</p>
+                        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+                    </div>
+                {% empty %}
+                    <p>No answers yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org/dist/htmx.min.js"></script>
+    <script>
+        document.body.addEventListener('htmx:load', function (event) {
+            if (event.target.id === 'answers') {
+                var questionViews = document.getElementById('questionViews');
+                var viewsCount = parseInt(questionViews.textContent);
+                questionViews.textContent = viewsCount + 1;
+            }
+        });
+    </script>
+</body>
+</html>
