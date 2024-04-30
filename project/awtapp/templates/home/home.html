@@ -1,23 +1,120 @@
-<!-- home.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .ask-button {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+        .ask-button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .question {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question h2 {
+            font-size: 24px;
+            font-weight: bold; /* Make the title bold */
+            margin-bottom: 10px;
+            color: #007bff; /* Change title color */
+        }
+        .question p {
+            color: #555;
+            font-size: 16px;
+        }
+        .question a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .question a:hover {
+            color: #007bff;
+        }
+        .login-signup {
+            margin-left: auto;
+        }
+        .login-signup a {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .login-signup a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .mt-4 {
+            margin-top: 40px;
+        }
+        .ask-button,
+        .login-signup a {
+            font-size: 16px;
+        }
+
+    </style>
 </head>
-<body>
-    <div>
-        <input type="text" placeholder="Search... (non-functional)">
-    </div>
-    <!-- Button to Ask a Question -->
-    <a href="{% url 'post_question' %}" style="position: absolute; top: 10px; right: 10px;">Ask a Question</a>
-
-    <h1>Questions</h1>
-    {% for question in questions %}
-        <div>
-            <h2><a href="{% url 'question_detail' question.id %}">{{ question.title }}</a></h2>
-            <p>{{ question.content|truncatewords:30 }}</p>
+<body hx-target="#questions" hx-get="/questions/">
+    <nav class="navbar navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Quora-like</a>
+            <a class="btn ask-button" href="{% url 'post_question' %}" hx-get="{% url 'post_question' %}">Ask a Question</a>
+            <div class="login-signup">
+                {% if request.user.is_authenticated %}
+                    <span>Welcome, {{ request.user.username }}!</span>
+                    <a href="{% url 'logout' %}" class="btn btn-link" hx-get="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-link" hx-get="{% url 'login' %}">Login</a>
+                    <a href="{% url 'signup' %}" class="btn btn-link" hx-get="{% url 'signup' %}">Signup</a>
+                {% endif %}
+            </div>
         </div>
-    {% endfor %}
-</body>
-</html>
+    </nav>
 
+    <div class="container">
+        <h1 class="mt-4">Questions</h1>
+        <div id="questions">
+            {% for question in questions %}
+                <div class="question">
+                    <h2><a href="{% url 'question_detail' question.id %}" hx-get="{% url 'question_detail' question.id %}">{{ question.title }}</a></h2>
+                    <p>{{ question.content|truncatewords:30 }}</p>
+                    <div class="text-muted">Asked by: {{ question.user }}</div>
+                    <div class="counts">
+                        <div class="text-muted">
+                            Views: <span class="views">{{ question.views }} 
+                            Upvotes: <span class="upvotes">{{ question.upvotes }}
+                            Downvotes: <span class="downvotes">{{ question.downvotes }}
+                            </span></div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No questions available.</p>
+            {% endfor %}
+        </div>
+    </div>

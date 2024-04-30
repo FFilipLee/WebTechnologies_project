@@ -3,15 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Answer</title>
+    <title>Post Answer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0077cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #005faa;
+        }
+    </style>
 </head>
 <body>
-    <h1>Create Answer</h1>
+    <h2>Post Your Answer</h2>
     <form method="post">
         {% csrf_token %}
-        <label for="content">Content:</label>
-        <textarea id="content" name="content" required></textarea><br>
-        <button type="submit">Create</button>
+        <div>
+            <label for="content">Your Answer:</label>
+            <textarea id="content" name="content" rows="4" placeholder="Write your answer here..." required></textarea>
+        </div>
+        <button type="submit">Post Answer</button>
     </form>
+    <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
 </body>
 </html>
