@@ -142,3 +142,4 @@ GitHub.sublime-settings
 !.vscode/extensions.json 
 .history
 project/project/DATABASE_PATH.py
+database/AWT_project_db.db
