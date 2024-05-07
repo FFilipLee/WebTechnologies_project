@@ -99,6 +99,16 @@
 
     <div class="container">
         <h1 class="mt-4">Questions</h1>
+        <!-- Search Bar -->
+        <form class="mt-4 mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search...">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">Search</button>
+                </div>
+            </div>
+        </form>
+        
         <div id="questions">
             {% for question in questions %}
                 <div class="question">
@@ -118,3 +128,5 @@
             {% endfor %}
         </div>
     </div>
+</body>
+</html>
