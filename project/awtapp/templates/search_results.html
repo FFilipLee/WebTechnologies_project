@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Search Results</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -33,7 +33,7 @@
             background-color: #218838;
             border-color: #1e7e34;
         }
-    
+
         .question {
             background-color: #ffffff;
             padding: 20px;
@@ -41,11 +41,11 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-    
+
         .question h2 a {
             color: #007bff;
         }
-    
+
         .question h2 a:hover {
             text-decoration: none;
         }
@@ -55,42 +55,26 @@
             color: white;
         }
     </style>
-    
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">Quora-like</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link">Welcome, {{ request.user.username }}!</span>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'logout' %}" class="nav-link" hx-get="{% url 'logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="{% url 'login' %}" class="nav-link" hx-get="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'signup' %}" class="nav-link" hx-get="{% url 'signup' %}">Signup</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="btn ask-button nav-link" href="{% url 'post_question' %}" hx-get="{% url 'post_question' %}">Ask a Question</a>
-                    </li>
-                </ul>
+            <div class="login-signup ml-auto">
+                {% if request.user.is_authenticated %}
+                    <span class="nav-link">Welcome, {{ request.user.username }}!</span>
+                    <a href="{% url 'logout' %}" class="nav-link" hx-get="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link" hx-get="{% url 'login' %}">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-link" hx-get="{% url 'signup' %}">Signup</a>
+                {% endif %}
+                <a class="btn ask-button nav-link" href="{% url 'post_question' %}" hx-get="{% url 'post_question' %}">Ask a Question</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <h1 class="mt-4">Questions</h1>
+        <h1 class="mt-4">Search Results</h1>
         <form class="mt-4 mb-4" action="{% url 'search' %}" method="GET">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="Search..." name="query">
@@ -98,10 +82,13 @@
                     <button class="btn btn-outline-secondary" type="submit">Search</button>
                 </div>
             </div>
+            <div class="mt-2">
+                <button class="btn btn-secondary" type="button" onclick="clearResults()">Clear Results</button>
+            </div>
         </form>
 
         <div id="questions">
-            {% for question in questions %}
+            {% for question in results %}
                 <article class="question">
                     <h2><a href="{% url 'question_detail' question.id %}" hx-get="{% url 'question_detail' question.id %}">{{ question.title }}</a></h2>
                     <p>{{ question.content|truncatewords:30 }}</p>
@@ -117,6 +104,12 @@
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        function clearResults() {
+            window.location.href = "{% url 'home' %}"; // Redirect to the home page or any other appropriate URL
+        }
+    </script>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

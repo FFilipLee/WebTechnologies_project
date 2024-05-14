@@ -4,120 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ question.title }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre-exp.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css/dist/spectre-icons.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f6f6f6;
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f4f4f4;
             color: #333;
         }
 
-        .container {
-            margin: 20px auto;
-            max-width: 800px; /* Adjust based on your design */
-            padding: 0 15px;
-        }
-
         .question, .answer-card {
-            background-color: #fff;
-            border-radius: 5px;
+            background-color: #ffffff;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .question h1, .answer-card h2 {
-            margin-top: 0;
+            color: #007bff;
         }
 
-        .answer-card p {
-            margin-bottom: 15px;
-        }
-
-        .btn {
+        .btn-primary, .btn-like, .btn-dislike {
             margin-top: 10px;
-            padding: 8px 20px;
-            border: none;
-            border-radius: 5px;
+            border-color: #007bff;
             background-color: #007bff;
             color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .btn:hover {
+        .btn-primary:hover, .btn-like:hover, .btn-dislike:hover {
             background-color: #0056b3;
-        }
-
-        .btn-primary {
-            background-color: #28a745;
-        }
-
-        .btn-primary:hover {
-            background-color: #218838;
+            border-color: #0056b3;
         }
 
         .btn-danger {
             background-color: #dc3545;
+            border-color: #dc3545;
         }
 
         .btn-danger:hover {
             background-color: #c82333;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+            border-color: #c82333;
         }
 
         .answer-card:hover {
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .question {
-            /* Existing styles */
-            position: relative;
-        }
-
-        .question .btn-like,
-        .question .btn-dislike {
-            margin-left: 10px; /* Adjust spacing between buttons */
-        }
-
-        /* Optionally, add specific styles for like and dislike buttons */
-        .btn-like {
-            background-color: #28a745;
-        }
-
-        .btn-dislike {
-            background-color: #dc3545;
-        }
-
-        .btn-like:hover,
-        .btn-dislike:hover {
-            filter: brightness(1.2); /* Increase brightness on hover */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Quora-like</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-primary nav-link" href="{% url 'home' %}">Back to questions list</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <div class="question">
             <h1>{{ question.title }}</h1>
             <p>{{ question.content }}</p>
             <p>Posted on: {{ question.postDate }}</p>
             <p>Views: <span id="questionViews">{{ question.views }}</span> | Upvotes: {{ question.upvotes }} | Downvotes: {{ question.downvotes }}</p>
-            <div>
-                <a href="{% url 'home' %}" class="btn btn-primary">Back to questions list</a>
-                <button class="btn btn-like" data-answer-id="{{ answer.id }}">Like</button>
-                <span id="likeCount{{ answer.id }}">{{ answer.upvotes }}</span>
-                <button class="btn btn-dislike" data-answer-id="{{ answer.id }}">Dislike</button>
-                <span id="dislikeCount{{ answer.id }}">{{ answer.downvotes }}</span>
-            </div>
         </div>
 
-        
         <div class="question">
             <h2>Post Your Answer</h2>
             <form method="post" action="{% url 'post_answer' question.id %}">
@@ -131,40 +89,43 @@
             <h2>Answers</h2>
             <div id="answers">
                 {% for answer in answers %}
-                    <div class="answer-card">
-                        <p>{{ answer.content }}</p>
-                        <p>Posted on: {{ answer.postDate }}</p>
-                        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
-                    </div>
-                {% empty %}
-                    <p>No answers yet</p>
-                {% endfor %}
+    <div class="answer-card" onclick="toggleComments('comments-{{answer.id}}')">
+        <p>{{ answer.content }}</p>
+        <p>Posted on: {{ answer.postDate }}</p>
+        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+        <button type="button" class="btn btn-info">Show/Hide Comments</button>
+        <div id="comments-{{answer.id}}" style="display:none;">
+            {% for comment in answer.comment_set.all %}
+                <div class="comment">
+                    <p>{{ comment.content }}</p>
+                    <p>Posted by: {{ comment.user.username }} on {{ comment.postDate }}</p>
+                </div>
+            {% empty %}
+                <p>No comments yet</p>
+            {% endfor %}
+        </div>
+    </div>
+{% empty %}
+    <p>No answers yet</p>
+{% endfor %}
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org/dist/htmx.min.js"></script>
-    <script>
-        document.body.addEventListener('htmx:load', function (event) {
-            if (event.target.id === 'answers') {
-                var questionViews = document.getElementById('questionViews');
-                var viewsCount = parseInt(questionViews.textContent);
-                questionViews.textContent = viewsCount + 1;
-            }
-        });
-
-        document.addEventListener('click', function (event) {
-            if (event.target.classList.contains('btn-like')) {
-                var answerId = event.target.dataset.answerId;
-                var likeCount = document.getElementById('likeCount' + answerId);
-                likeCount.textContent = parseInt(likeCount.textContent) + 1;
-            }
-            if (event.target.classList.contains('btn-dislike')) {
-                var answerId = event.target.dataset.answerId;
-                var dislikeCount = document.getElementById('dislikeCount' + answerId);
-                dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-            }
-        });
-    </script>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.9/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+<script>
+    function toggleComments(commentId) {
+        var element = document.getElementById(commentId);
+        if (element.style.display === "none") {
+            element.style.display = "block";
+        } else {
+            element.style.display = "none";
+        }
+    }
+</script>

@@ -1,8 +1,9 @@
 from pprint import pprint
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm, SignupForm, LoginForm
-from .models import Answer, Question, Comment, User, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
+
+from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm
+from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -156,47 +157,3 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('login')
-
-@login_required
-def question_like(request, question_id):
-    if Question.objects.filter(id=question_id).exists():
-        if not QuestionLike.objects.filter(user_id=request.user.id, question_id=question_id).exists():
-            QuestionLike(user_id=request.user.id, question_id=question_id).save()
-            return HttpResponse("Question liked.", status=200)
-        else:
-            QuestionLike(user_id=request.user.id, question_id=question_id).delete()
-            return HttpResponse("Question unliked.", status=200)
-    return HttpResponse("Such question does not exist.", status=404)
-
-@login_required
-def question_dislike(request, question_id):
-    if Question.objects.filter(id=question_id).exists():
-        if not QuestionDislike.objects.filter(user_id=request.user.id, question_id=question_id).exists():
-            QuestionDislike(user_id=request.user.id, question_id=question_id).save()
-            return HttpResponse("Question disliked.", status=200)
-        else:
-            QuestionDislike(user_id=request.user.id, question_id=question_id).delete()
-            return HttpResponse("Question undisliked.", status=200)
-    return HttpResponse("Such question does not exist.", status=404)
-    
-@login_required
-def answer_like(request, answer_id):
-    if Question.objects.filter(id=answer_id).exists():
-        if not AnswerLike.objects.filter(user_id=request.user.id, answer_id=answer_id).exists():
-            AnswerLike(user_id=request.user.id, answer_id=answer_id).save()
-            return HttpResponse("Answer liked.", status=200)
-        else:
-            AnswerLike(user_id=request.user.id, answer_id=answer_id).delete()
-            return HttpResponse("Answer unliked.", status=200)
-    return HttpResponse("Such answer does not exist.", status=404)
-
-@login_required
-def answer_dislike(request, answer_id):
-    if Question.objects.filter(id=answer_id).exists():
-        if not AnswerDislike.objects.filter(user_id=request.user.id, answer_id=answer_id).exists():
-            AnswerDislike(user_id=request.user.id, answer_id=answer_id).save()
-            return HttpResponse("Answer disliked.", status=200)
-        else:
-            AnswerDislike(user_id=request.user.id, answer_id=answer_id).delete()
-            return HttpResponse("Answer undisliked.", status=200)
-    return HttpResponse("Such answer does not exist.", status=404)

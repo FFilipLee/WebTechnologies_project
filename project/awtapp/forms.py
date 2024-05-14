@@ -43,8 +43,6 @@ class PostCommentForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'placeholder': 'Write your comment here'}),
         }
 
-
-
 class SignupForm(UserCreationForm):
     class Meta:
         model = User 
@@ -53,3 +51,6 @@ class SignupForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Search')
