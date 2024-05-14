@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 from .forms import LoginForm, PostQuestionForm, PostAnswerForm, PostCommentForm, SearchForm, SignupForm
-from .models import Answer, Question, Comment, User, QuestionTag
+from .models import Answer, Question, Comment, User, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -171,3 +171,27 @@ def search_view(request):
         )
 
     return render(request, 'search_results.html', {'form': form, 'results': results})
+
+def calculate_question_likes(request, question_id):
+    if Question.objects.filter(id=question_id).exists():
+        count = QuestionLike.objects.filter(question_id=question_id).count()
+        return HttpResponse(count, status=200)
+    return HttpResponse("No such question.", status=404)
+
+def calculate_question_dislikes(request, question_id):
+    if Question.objects.filter(id=question_id).exists():
+        count = QuestionDislike.objects.filter(question_id=question_id).count()
+        return HttpResponse(count, status=200)
+    return HttpResponse("No such question.", status=404)
+
+def calculate_answer_likes(request, answer_id):
+    if Answer.objects.filter(id=answer_id).exists():
+        count = AnswerLike.objects.filter(answer_id=answer_id).count()
+        return HttpResponse(count, status=200)
+    return HttpResponse("No such answer.", status=404)
+
+def calculate_answer_dislikes(request, answer_id):
+    if Answer.objects.filter(id=answer_id).exists():
+        count = AnswerDislike.objects.filter(answer_id=answer_id).count()
+        return HttpResponse(count, status=200)
+    return HttpResponse("No such answer.", status=404)
