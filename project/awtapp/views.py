@@ -2,7 +2,7 @@ from pprint import pprint
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import PostQuestionForm, PostAnswerForm, PostCommentForm
+from .forms import LoginForm, PostQuestionForm, PostAnswerForm, PostCommentForm, SearchForm, SignupForm
 from .models import Answer, Question, Comment, User, QuestionTag
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -157,3 +157,17 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('login')
+
+def search_view(request):
+    form = SearchForm(request.GET)
+    results = []
+
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Question.objects.filter(
+            Q(title__icontains=query) |  # Search in question title
+            Q(content__icontains=query) |  # Search in question content
+            Q(user__username__icontains=query)  # Search in user name
+        )
+
+    return render(request, 'search_results.html', {'form': form, 'results': results})
