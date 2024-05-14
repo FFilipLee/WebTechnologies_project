@@ -1,1 +1,1 @@
-PATH = "C:/Users/Berkay/Downloads/AWT_project_db.db"
+PATH = "C:/Users/fflep/Other_projects/WebTechnologies_project/database/AWT_project_db.db"

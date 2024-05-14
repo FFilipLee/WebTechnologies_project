@@ -18,12 +18,12 @@ def question_list(request):
 def question_detail(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     question.views += 1
-    answers = Answer.objects.filter(question=question)
+    answer_ids = Answer.objects.filter(question_id=question_id)
     answer_comments = {}
-    for answer in answers:
-        answer_comments[answer] = Comment.objects.filter(answer=answer)
+    for answer_id in answer_ids:
+        answer_comments[answer_id] = Comment.objects.filter(answer_id=answer_id)
     pprint(answer_comments)
-    return render(request, 'questions/question_detail.html', {'question': question, 'answers': answers, 'answer_comments': answer_comments})
+    return render(request, 'questions/question_detail.html', {'question': question, 'answers': answer_ids, 'answer_comments': answer_comments})
 
 @login_required
 def post_question(request):
