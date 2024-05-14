@@ -158,16 +158,15 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-def search_view(request):
+def search(request):
     form = SearchForm(request.GET)
     results = []
 
     if form.is_valid():
         query = form.cleaned_data['query']
         results = Question.objects.filter(
-            Q(title__icontains=query) |  # Search in question title
-            Q(content__icontains=query) |  # Search in question content
-            Q(user__username__icontains=query)  # Search in user name
+            Q(title__icontains=query) | 
+            Q(content__icontains=query)
         )
 
     return render(request, 'search_results.html', {'form': form, 'results': results})
