@@ -15,4 +15,5 @@ urlpatterns = [
     path('signup/', views.user_signup, name='signup'),
     path('logout/', views.user_logout, name='logout'),
     path('search/', views.search, name='search'),
+    path('answers/<int:answer_id>/post_comment/', views.post_comment, name='post_comment'),
 ]

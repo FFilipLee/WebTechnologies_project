@@ -1,1 +1,1 @@
-PATH = "C:/Users/fflep/Other_projects/WebTechnologies_project/database/AWT_project_db.db"
+PATH = "C:/Users/Berkay/Documents/GitHub/web2/WebTechnologies_project/database/AWT_project_db.db"

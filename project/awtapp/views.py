@@ -38,7 +38,7 @@ def post_question(request):
     else:
         form = PostQuestionForm()  
     return render(request, 'create_question.html', {'form': form})
-
+    
 @login_required
 def post_answer(request, question_id):
     if request.method == 'POST':
@@ -49,24 +49,37 @@ def post_answer(request, question_id):
             answer.question_id = question_id  
             answer.postDate = timezone.now()  
             answer.save()
-            return redirect('question_detail', pk=question_id)
-    elif request.method == 'GET':
+            return redirect('question_detail', question_id)
+    else:
         form = PostAnswerForm()  
-        return render(request, 'create_answer.html', {'form': form})
-    return HttpResponse("Method not allowed.", status=405)
-
+    return render(request, 'create_answer.html', {'form': form})
 
 @login_required
-def post_comment(request):
+def post_comment(request, answer_id):
     if request.method == 'POST':
         form = PostCommentForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('some_view_name')
-    elif request.method == 'GET':
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.answer_id = answer_id
+            comment.postDate = timezone.now()
+            comment.save()
+
+            # Retrieve the answer object to get the question_id
+            answer = Answer.objects.get(pk=answer_id)
+            question_id = answer.question.pk
+
+
+            # Redirect to the question detail page
+            return redirect('question_detail', question_id)
+            #return HttpResponse(f"{question_id}")
+    else:
         form = PostCommentForm()
-        return render(request, 'questions/post_comment.html', {'form': form})
-    return HttpResponse("Method not allowed.", status=405)
+
+    return render(request, 'create_answer.html', {'form': form})
+
+
+
 
 def search_question(request, query):
     if request.method == 'GET':
@@ -78,7 +91,7 @@ def search_question(request, query):
 def delete_question(request, question_id):
     if request.method == 'GET':
         answer = get_object_or_404(Question, id=question_id)
-        if answer.user_id == request.user.id or request.user.is_superuser:
+        if answer.user == request.user.id or request.user.is_superuser:
             Question.objects.filter(id=question_id).delete()
             return render(request, 'home.html', {})
         return HttpResponse("No rights to delete this content.", status=403)
@@ -88,7 +101,7 @@ def delete_question(request, question_id):
 def delete_answer(request, answer_id):
     if request.method == 'GET':
         answer = get_object_or_404(Answer, id=answer_id)
-        if answer.user_id == request.user.id or request.user.is_superuser:
+        if answer.user == request.user.id or request.user.is_superuser:
             Answer.objects.filter(id=answer_id).delete()
             return render(request, 'home.html', {})
         return HttpResponse("No rights to delete this content.", status=403)
@@ -98,7 +111,7 @@ def delete_answer(request, answer_id):
 def delete_comment(request, comment_id):
     if request.method == 'GET':
         answer = get_object_or_404(Comment, id=comment_id)
-        if answer.user_id == request.user.id or request.user.is_superuser:
+        if answer.user == request.user.id or request.user.is_superuser:
             Comment.objects.filter(id=comment_id).delete()
             return render(request, 'home.html', {})
         return HttpResponse("No rights to delete this content.", status=403)

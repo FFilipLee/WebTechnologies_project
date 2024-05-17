@@ -33,14 +33,11 @@ class PostAnswerForm(forms.ModelForm):
         }
 
 class PostCommentForm(forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
-    answer = forms.ModelChoiceField(queryset=Answer.objects.all(), label="Select Answer")
-
     class Meta:
         model = Comment
-        fields = ['user', 'answer', 'content']
+        fields = ['content']
         widgets = {
-            'content': forms.Textarea(attrs={'placeholder': 'Write your comment here'}),
+            'content': forms.Textarea(attrs={'placeholder': 'Write your answer here...'}),
         }
 
 class SignupForm(UserCreationForm):

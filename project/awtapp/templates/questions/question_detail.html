@@ -89,43 +89,62 @@
             <h2>Answers</h2>
             <div id="answers">
                 {% for answer in answers %}
-    <div class="answer-card" onclick="toggleComments('comments-{{answer.id}}')">
-        <p>{{ answer.content }}</p>
-        <p>Posted on: {{ answer.postDate }}</p>
-        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
-        <button type="button" class="btn btn-info">Show/Hide Comments</button>
-        <div id="comments-{{answer.id}}" style="display:none;">
-            {% for comment in answer.comment_set.all %}
-                <div class="comment">
-                    <p>{{ comment.content }}</p>
-                    <p>Posted by: {{ comment.user.username }} on {{ comment.postDate }}</p>
-                </div>
-            {% empty %}
-                <p>No comments yet</p>
-            {% endfor %}
-        </div>
-    </div>
-{% empty %}
-    <p>No answers yet</p>
-{% endfor %}
+                    <div class="answer-card">
+                        <p>{{ answer.content }}</p>
+                        <p>Posted on: {{ answer.postDate }}</p>
+                        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+                        <button type="button" class="btn btn-info" onclick="toggleComments('comments-{{answer.id}}'); event.preventDefault();">Show/Hide Comments</button>
+                        <button type="button" class="btn btn-success" onclick="toggleCommentForm('commentForm-{{answer.id}}'); event.preventDefault();">Make Comment</button>
+                        <div id="comments-{{answer.id}}" style="display:none;">
+                            {% for comment in answer.comment_set.all %}
+                                <div class="comment">
+                                    <p>{{ comment.content }}</p>
+                                    <p>Posted by: {{ comment.user.username }} on {{ comment.postDate }}</p>
+                                </div>
+                            {% empty %}
+                                <p>No comments yet</p>
+                            {% endfor %}
+                        </div>
+                        <div id="commentForm-{{answer.id}}" style="display:none;">
+                            <form method="post" action="{% url 'post_comment' answer.id %}">
+                                {% csrf_token %}
+                                <textarea name="content" class="form-control" rows="3" required></textarea>
+                                <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No answers yet</p>
+                {% endfor %}
             </div>
         </div>
     </div>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.9/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.9/dist/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function toggleComments(commentId) {
+            var element = document.getElementById(commentId);
+            if (element.style.display === "none") {
+                element.style.display = "block";
+            } else {
+                element.style.display = "none";
+            }
+        }
+    
+        function toggleCommentForm(formId) {
+            var formElement = document.getElementById(formId);
+            if (formElement.style.display === "none") {
+                formElement.style.display = "block";
+            } else {
+                formElement.style.display = "none";
+            }
+        }
+    </script>
+
 </body>
 </html>
 
-<script>
-    function toggleComments(commentId) {
-        var element = document.getElementById(commentId);
-        if (element.style.display === "none") {
-            element.style.display = "block";
-        } else {
-            element.style.display = "none";
-        }
-    }
-</script>
