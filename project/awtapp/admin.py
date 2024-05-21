@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import  Question, Answer, Comment, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
-
+from .models import Question, Answer, Comment, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
@@ -8,7 +7,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'question_id', 'content', 'postDate', 'views')
+    list_display = ('id', 'user_id', 'question', 'content', 'postDate', 'views')
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -16,20 +15,21 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(QuestionTag)
 class QuestionTagAdmin(admin.ModelAdmin):
-    list_display = ('tag', 'question_id')
+    list_display = ('tag', 'question')
 
 @admin.register(QuestionLike)
 class QuestionLikeAdmin(admin.ModelAdmin):
-    list_display = ('question_id', 'user_id')
+    list_display = ('question', 'user_id')
 
 @admin.register(QuestionDislike)
 class QuestionDislikeAdmin(admin.ModelAdmin):
-    list_display = ('question_id', 'user_id')
+    list_display = ('question', 'user_id')
 
 @admin.register(AnswerLike)
 class AnswerLikeAdmin(admin.ModelAdmin):
-    list_display = ('question_id', 'user_id')
+    list_display = ('answer', 'user_id')
 
 @admin.register(AnswerDislike)
 class AnswerDislikeAdmin(admin.ModelAdmin):
-    list_display = ('question_id', 'user_id')
+    list_display = ('answer', 'user_id')
+

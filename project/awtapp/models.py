@@ -44,7 +44,6 @@ class QuestionLike(models.Model):
             models.UniqueConstraint(fields=['question', 'user'], name='unique_key_pair_ql')
         ]
 
-
 class QuestionDislike(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -53,20 +52,18 @@ class QuestionDislike(models.Model):
             models.UniqueConstraint(fields=['question', 'user'], name='unique_key_pair_qd')
         ]
 
-
 class AnswerLike(models.Model):
-    question = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['question', 'user'], name='unique_key_pair_al')
+            models.UniqueConstraint(fields=['answer', 'user'], name='unique_key_pair_al')
         ]
 
-
 class AnswerDislike(models.Model):
-    question = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['question', 'user'], name='unique_key_pair_ad')
+            models.UniqueConstraint(fields=['answer', 'user'], name='unique_key_pair_ad')
         ]

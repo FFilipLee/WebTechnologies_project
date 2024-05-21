@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db.models import F
 
 
 def question_list(request):
@@ -17,13 +18,20 @@ def question_list(request):
 
 def question_detail(request, question_id):
     question = get_object_or_404(Question, id=question_id)
-    question.views += 1
+
+    Question.objects.filter(id=question_id).update(views=F('views') + 1)
+
     answer_ids = Answer.objects.filter(question_id=question_id)
     answer_comments = {}
+    
     for answer_id in answer_ids:
         answer_comments[answer_id] = Comment.objects.filter(answer_id=answer_id)
-    pprint(answer_comments)
-    return render(request, 'questions/question_detail.html', {'question': question, 'answers': answer_ids, 'answer_comments': answer_comments})
+    
+    user = request.user
+    user_liked = QuestionLike.objects.filter(question=question, user=user).exists()
+    user_disliked = QuestionDislike.objects.filter(question=question, user=user).exists()
+    
+    return render(request, 'questions/question_detail.html', {'question': question, 'answers': answer_ids, 'answer_comments': answer_comments, 'user_liked': user_liked, 'user_disliked': user_disliked})
 
 @login_required
 def post_question(request):
@@ -207,3 +215,48 @@ def calculate_answer_dislikes(request, answer_id):
         count = AnswerDislike.objects.filter(answer_id=answer_id).count()
         return HttpResponse(count, status=200)
     return HttpResponse("No such answer.", status=404)
+
+def like_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    user = request.user
+
+    # check if the user has already liked the question
+    liked = QuestionLike.objects.filter(question=question, user=user).first()
+    if liked:
+        liked.delete()
+        return redirect('question_detail', question_id=question_id)
+
+    # check if the user has disliked the question
+    existing_dislike = QuestionDislike.objects.filter(question=question, user=user).first()
+    if existing_dislike:
+        existing_dislike.delete()
+   
+    # Toggle like
+    like, created = QuestionLike.objects.get_or_create(question=question, user=user)
+    if not created:
+        like.delete()
+
+    return redirect('question_detail', question_id=question_id)
+
+def dislike_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    user = request.user
+
+    # check if the user has already disliked the question
+    disliked = QuestionDislike.objects.filter(question=question, user=user).first()
+    if disliked:
+        disliked.delete()
+        return redirect('question_detail', question_id=question_id)
+
+    # check if the user has liked the question
+    existing_like = QuestionLike.objects.filter(question=question, user=user).first()
+    if existing_like:
+        existing_like.delete()
+
+    # Toggle like
+    like, created = QuestionDislike.objects.get_or_create(question=question, user=user)
+    if not created:
+        like.delete()
+
+    return redirect('question_detail', question_id=question_id)
+
