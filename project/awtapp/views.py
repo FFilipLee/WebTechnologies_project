@@ -187,7 +187,9 @@ def search(request):
         query = form.cleaned_data['query']
         results = Question.objects.filter(
             Q(title__icontains=query) | 
-            Q(content__icontains=query)
+            Q(content__icontains=query) |
+            Q(user__username__icontains=query) | 
+            Q(user__email__icontains=query)
         )
 
     return render(request, 'search_results.html', {'form': form, 'results': results})
@@ -242,18 +244,15 @@ def dislike_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     user = request.user
 
-    # check if the user has already disliked the question
     disliked = QuestionDislike.objects.filter(question=question, user=user).first()
     if disliked:
         disliked.delete()
         return redirect('question_detail', question_id=question_id)
 
-    # check if the user has liked the question
     existing_like = QuestionLike.objects.filter(question=question, user=user).first()
     if existing_like:
         existing_like.delete()
 
-    # Toggle like
     like, created = QuestionDislike.objects.get_or_create(question=question, user=user)
     if not created:
         like.delete()
