@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from .forms import LoginForm, PostQuestionForm, PostAnswerForm, PostCommentForm, SearchForm, SignupForm, UserUpdateForm
 from .models import Answer, Question, Comment, User, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -21,10 +21,15 @@ def profile(request):
     else:
         form = UserUpdateForm(instance=request.user)
 
+    # Get leaderboard data
+    leaderboard = get_leaderboard()
+
     context = {
-        'form': form
+        'form': form,
+        'leaderboard': leaderboard  # Pass the leaderboard data to the template
     }
     return render(request, 'profile.html', context)
+
 
 def question_list(request):
     questions = Question.objects.all()
@@ -273,3 +278,27 @@ def dislike_question(request, question_id):
 
     return redirect('question_detail', question_id=question_id)
 
+def get_leaderboard():
+    users = User.objects.annotate(
+        questions_asked=Count('question'),
+        answers_provided=Count('answer'),
+        question_likes=Count('question__questionlike'),
+        question_dislikes=Count('question__questiondislike'),
+        answer_likes=Count('answer__answerlike'),
+        answer_dislikes=Count('answer__answerdislike'),
+    ).annotate(
+        total_score=(
+            F('questions_asked') * 10 +
+            F('answers_provided') * 5 +
+            F('question_likes') * 3 -
+            F('question_dislikes') * 1 +
+            F('answer_likes') * 2 -
+            F('answer_dislikes') * 1
+        )
+    ).order_by('-total_score')
+    
+    return users
+
+def leaderboard_view(request):
+    leaderboard = get_leaderboard()
+    return render(request, 'leaderboard.html', {'leaderboard': leaderboard})

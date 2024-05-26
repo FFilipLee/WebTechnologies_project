@@ -1,3 +1,5 @@
+<!-- profile.html -->
+
 {% extends "base.html" %}
 
 {% block title %}User Profile{% endblock %}
@@ -5,10 +7,13 @@
 {% block content %}
 <div class="container">
     <h1>User Profile</h1>
+    <!-- Your profile content here -->
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Update Profile</button>
     </form>
 </div>
+
+{% include 'leaderboard.html' %}
 {% endblock %}
