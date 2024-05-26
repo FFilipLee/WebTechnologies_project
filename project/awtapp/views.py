@@ -2,7 +2,7 @@ from pprint import pprint
 from django.shortcuts import redirect, render, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from .forms import LoginForm, PostQuestionForm, PostAnswerForm, PostCommentForm, SearchForm, SignupForm
+from .forms import LoginForm, PostQuestionForm, PostAnswerForm, PostCommentForm, SearchForm, SignupForm, UserUpdateForm
 from .models import Answer, Question, Comment, User, QuestionTag, QuestionLike, QuestionDislike, AnswerLike, AnswerDislike
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -11,6 +11,20 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import F
 
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'profile.html', context)
 
 def question_list(request):
     questions = Question.objects.all()

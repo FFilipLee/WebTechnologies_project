@@ -20,4 +20,5 @@ urlpatterns = [
     path('question/<int:question_id>/dislike/', views.dislike_question, name='dislike_question'),
     path('question/<int:question_id>/calculate_likes/', views.calculate_question_likes, name='calculate_question_likes'),
     path('question/<int:question_id>/calculate_dislikes/', views.calculate_question_dislikes, name='calculate_question_dislikes'),
+    path('profile/', views.profile, name='profile'),
 ]
