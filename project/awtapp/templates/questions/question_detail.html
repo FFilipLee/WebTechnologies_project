@@ -74,6 +74,12 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             transition: box-shadow 0.3s ease-in-out;
         }
+
+        .btn-red {
+            background-color: red;
+        color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -102,9 +108,16 @@
             <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
                 Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
             </a>
+
             <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
                 Dislike <span class="badge badge-light">{{ question.questiondislike_set.count }}</span>
             </a>
+
+            <a href="{% url 'delete_question' question.id %}" class="btn btn-red">
+                Delete <span class="badge badge-light"> </span>
+            </a>
+
+
         </div>
 
         <div class="question">
@@ -143,6 +156,7 @@
                                 <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
                             </form>
                         </div>
+
                     </div>
                 {% empty %}
                     <p>No answers yet</p>

@@ -105,9 +105,6 @@ def post_comment(request, answer_id):
 
     return render(request, 'create_answer.html', {'form': form})
 
-
-
-
 def search_question(request, query):
     if request.method == 'GET':
         questions = Question.objects.only('id', 'title').filter(title__icontains=query)
@@ -120,7 +117,7 @@ def delete_question(request, question_id):
         answer = get_object_or_404(Question, id=question_id)
         if answer.user == request.user.id or request.user.is_superuser:
             Question.objects.filter(id=question_id).delete()
-            return render(request, 'home.html', {})
+            return redirect('home')
         return HttpResponse("No rights to delete this content.", status=403)
     return HttpResponse("Method not allowed.", status=405)
 
