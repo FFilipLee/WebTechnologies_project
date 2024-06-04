@@ -114,8 +114,8 @@ def search_question(request, query):
 @login_required
 def delete_question(request, question_id):
     if request.method == 'GET':
-        answer = get_object_or_404(Question, id=question_id)
-        if answer.user == request.user.id or request.user.is_superuser:
+        question = get_object_or_404(Question, id=question_id)
+        if question.user == request.user.id or request.user.is_superuser:
             Question.objects.filter(id=question_id).delete()
             return redirect('home')
         return HttpResponse("No rights to delete this content.", status=403)
@@ -127,15 +127,15 @@ def delete_answer(request, answer_id):
         answer = get_object_or_404(Answer, id=answer_id)
         if answer.user == request.user.id or request.user.is_superuser:
             Answer.objects.filter(id=answer_id).delete()
-            return render(request, 'home.html', {})
+            return redirect('home')
         return HttpResponse("No rights to delete this content.", status=403)
     return HttpResponse("Method not allowed.", status=405)
 
 @login_required
 def delete_comment(request, comment_id):
     if request.method == 'GET':
-        answer = get_object_or_404(Comment, id=comment_id)
-        if answer.user == request.user.id or request.user.is_superuser:
+        comment = get_object_or_404(Comment, id=comment_id)
+        if comment.user == request.user.id or request.user.is_superuser:
             Comment.objects.filter(id=comment_id).delete()
             return render(request, 'home.html', {})
         return HttpResponse("No rights to delete this content.", status=403)
@@ -242,6 +242,7 @@ def like_question(request, question_id):
     liked = QuestionLike.objects.filter(question=question, user=user).first()
     if liked:
         liked.delete()
+        Question.objects.filter(id=question_id).update(views=F('views') - 1)
         return redirect('question_detail', question_id=question_id)
 
     # check if the user has disliked the question
@@ -254,7 +255,9 @@ def like_question(request, question_id):
     if not created:
         like.delete()
 
+    Question.objects.filter(id=question_id).update(views=F('views') - 1)
     return redirect('question_detail', question_id=question_id)
+
 
 def dislike_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
@@ -263,6 +266,7 @@ def dislike_question(request, question_id):
     disliked = QuestionDislike.objects.filter(question=question, user=user).first()
     if disliked:
         disliked.delete()
+        Question.objects.filter(id=question_id).update(views=F('views') - 1)
         return redirect('question_detail', question_id=question_id)
 
     existing_like = QuestionLike.objects.filter(question=question, user=user).first()
@@ -270,6 +274,50 @@ def dislike_question(request, question_id):
         existing_like.delete()
 
     like, created = QuestionDislike.objects.get_or_create(question=question, user=user)
+    if not created:
+        like.delete()
+
+    Question.objects.filter(id=question_id).update(views=F('views') - 1)
+    return redirect('question_detail', question_id=question_id)
+
+def like_answer(request, answer_id):
+    answer = get_object_or_404(Answer, id=answer_id)
+    user = request.user
+    question_id = Answer.objects.filter(id=answer_id).values_list('question')[0][0]
+
+    # check if the user has already liked the answer
+    liked = AnswerLike.objects.filter(answer=answer, user=user).first()
+    if liked:
+        liked.delete()
+        return redirect('question_detail', question_id=question_id)
+
+    # check if the user has disliked the answer
+    existing_dislike = AnswerDislike.objects.filter(answer=answer, user=user).first()
+    if existing_dislike:
+        existing_dislike.delete()
+   
+    # Toggle like
+    like, created = AnswerLike.objects.get_or_create(answer=answer, user=user)
+    if not created:
+        like.delete()
+
+    return redirect('question_detail', question_id=question_id)
+
+def dislike_answer(request, answer_id):
+    answer = get_object_or_404(Answer, id=answer_id)
+    user = request.user
+    question_id = Answer.objects.filter(id=answer_id).values_list('question')[0][0]
+
+    disliked = AnswerDislike.objects.filter(answer=answer, user=user).first()
+    if disliked:
+        disliked.delete()
+        return redirect('question_detail', question_id=question_id)
+
+    existing_like = AnswerLike.objects.filter(answer=answer, user=user).first()
+    if existing_like:
+        existing_like.delete()
+
+    like, created = AnswerDislike.objects.get_or_create(answer=answer, user=user)
     if not created:
         like.delete()
 

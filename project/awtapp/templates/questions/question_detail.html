@@ -76,7 +76,9 @@
         }
 
         .btn-red {
+            margin-top: 10px;
             background-color: red;
+            border-color: #6c757d;
         color: white;
         }
 
@@ -103,7 +105,7 @@
         <div class="question">
             <h1>{{ question.title }}</h1>
             <p>{{ question.content }}</p>
-            <p>Posted on: {{ question.postDate }}</p>
+            <p>Posted by: {{ question.user }} on {{ question.postDate }}</p>
             <p>Views: <span id="questionViews">{{ question.views }}</span></p>
             <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
                 Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
@@ -135,8 +137,19 @@
                 {% for answer in answers %}
                     <div class="answer-card">
                         <p>{{ answer.content }}</p>
-                        <p>Posted on: {{ answer.postDate }}</p>
-                        <p>Views: {{ answer.views }} | Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+                        <p>Posted by: {{ answer.user }} on {{ answer.postDate }}</p>
+                        <p>Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
+                        <a href="{% url 'like_answer' answer.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
+                            Like <span class="badge badge-light">{{ answer.answerlike_set.count }}</span>
+                        </a>
+            
+                        <a href="{% url 'dislike_answer' answer.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
+                            Dislike <span class="badge badge-light">{{ answer.answerdislike_set.count }}</span>
+                        </a>
+            
+                        <a href="{% url 'delete_answer' answer.id %}" class="btn btn-red">
+                            Delete <span class="badge badge-light"> </span>
+                        </a>
                         <button type="button" class="btn btn-info" onclick="toggleComments('comments-{{answer.id}}');">Show/Hide Comments</button>
                         <button type="button" class="btn btn-success" onclick="toggleCommentForm('commentForm-{{answer.id}}');">Make Comment</button>
                         <div id="comments-{{answer.id}}" style="display:none;">

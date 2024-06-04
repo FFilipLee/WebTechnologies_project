@@ -107,8 +107,9 @@
                     <p>{{ question.content|truncatewords:30 }}</p>
                     <footer class="text-muted">
                         Asked by: {{ question.user }}<br>
-                        Views: <span class="badge badge-light">{{ question.views }}</span>, 
-                        Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
+                        Views:   <span class="badge badge-light">{{ question.views }}</span> 
+                        Answers: <span class="badge badge-light">{{ question.answer_set.count }}</span> 
+                        Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span> 
                         Dislike <span class="badge badge-light">{{ question.questiondislike_set.count }}</span>
                     </footer>
                 </article>
