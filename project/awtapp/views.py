@@ -115,7 +115,7 @@ def search_question(request, query):
 def delete_question(request, question_id):
     if request.method == 'GET':
         question = get_object_or_404(Question, id=question_id)
-        if question.user == request.user.id or request.user.is_superuser:
+        if question.user == request.user or request.user.is_superuser:
             Question.objects.filter(id=question_id).delete()
             return redirect('home')
         return HttpResponse("No rights to delete this content.", status=403)
@@ -125,19 +125,23 @@ def delete_question(request, question_id):
 def delete_answer(request, answer_id):
     if request.method == 'GET':
         answer = get_object_or_404(Answer, id=answer_id)
-        if answer.user == request.user.id or request.user.is_superuser:
+        question_id = answer.question.pk
+        if answer.user == request.user or request.user.is_superuser:
             Answer.objects.filter(id=answer_id).delete()
-            return redirect('home')
+            return redirect('question_detail', question_id=question_id)
         return HttpResponse("No rights to delete this content.", status=403)
     return HttpResponse("Method not allowed.", status=405)
+
 
 @login_required
 def delete_comment(request, comment_id):
     if request.method == 'GET':
         comment = get_object_or_404(Comment, id=comment_id)
-        if comment.user == request.user.id or request.user.is_superuser:
+        answer = get_object_or_404(Answer, id=comment.answer.pk)
+        question_id = answer.question.pk
+        if comment.user == request.user or request.user.is_superuser:
             Comment.objects.filter(id=comment_id).delete()
-            return render(request, 'home.html', {})
+            return redirect('question_detail', question_id=question_id)
         return HttpResponse("No rights to delete this content.", status=403)
     return HttpResponse("Method not allowed.", status=405)
     
