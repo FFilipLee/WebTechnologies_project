@@ -164,6 +164,13 @@
                                 <div class="comment">
                                     <p>{{ comment.content }}</p>
                                     <p>Posted by: {{ comment.user.username }} on {{ comment.postDate }}</p>
+                                    {% if request.user.is_authenticated %}
+                                        {% if comment.user == request.user or request.user.is_superuser %}
+                                            <a href="{% url 'delete_comment' comment.id %}" class="btn btn-red">
+                                                Delete <span class="badge badge-light"></span>
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
                                 </div>
                             {% empty %}
                                 <p>No comments yet</p>

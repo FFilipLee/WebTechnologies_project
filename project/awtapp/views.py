@@ -327,32 +327,6 @@ def dislike_answer(request, answer_id):
 
     return redirect('question_detail', question_id=question_id)
 
-
-def like_answer(request, answer_id):
-    user = request.user
-    answer = Answer.objects.get(pk=answer_id)
-    question_id = answer.question.pk
-
-    # check if the user has already liked the answer
-    liked = AnswerLike.objects.filter(answer=answer, user=user).first()
-    if liked:
-        liked.delete()
-        return redirect('question_detail', question_id=question_id)
-
-    # check if the user has disliked the question
-    existing_dislike = AnswerDislike.objects.filter(answer=answer, user=user).first()
-    if existing_dislike:
-        existing_dislike.delete()
-   
-    # Toggle like
-    like, created = AnswerLike.objects.get_or_create(answer=answer, user=user)
-    if not created:
-        like.delete()
-
-    return redirect('question_detail', question_id=question_id)
-
-
-
 def get_leaderboard():
     users = User.objects.annotate(
         questions_asked=Count('question'),
