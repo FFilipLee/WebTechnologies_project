@@ -107,11 +107,11 @@
             <p>{{ question.content }}</p>
             <p>Posted by: {{ question.user }} on {{ question.postDate }}</p>
             <p>Views: <span id="questionViews">{{ question.views }}</span></p>
-            <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
+            <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked_question %}active{% endif %}">
                 Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
             </a>
         
-            <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
+            <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked_question %}active{% endif %}">
                 Dislike <span class="badge badge-light">{{ question.questiondislike_set.count }}</span>
             </a>
         
@@ -140,12 +140,12 @@
                     <div class="answer-card">
                         <p>{{ answer.content }}</p>
                         <p>Posted by: {{ answer.user }} on {{ answer.postDate }}</p>
-                        <p>Upvotes: {{ answer.upvotes }} | Downvotes: {{ answer.downvotes }}</p>
-                        <a href="{% url 'like_answer' answer.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
+
+                        <a href="{% url 'like_answer' answer.id %}" class="btn btn-like {% if user_liked %}{% endif %}">
                             Like <span class="badge badge-light">{{ answer.answerlike_set.count }}</span>
                         </a>
             
-                        <a href="{% url 'dislike_answer' answer.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
+                        <a href="{% url 'dislike_answer' answer.id %}" class="btn btn-dislike {% if user_disliked %}{% endif %}">
                             Dislike <span class="badge badge-light">{{ answer.answerdislike_set.count }}</span>
                         </a>
             
