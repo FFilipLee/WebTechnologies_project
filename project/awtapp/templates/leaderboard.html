@@ -1,6 +1,4 @@
-<!-- leaderboard.html -->
-
-{% block title %}{% endblock %}
+{% block title %}Leaderboard{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -10,6 +8,12 @@
             <tr>
                 <th>Rank</th>
                 <th>User</th>
+                <th>Questions Asked</th>
+                <th>Answers Provided</th>
+                <th>Question Likes</th>
+                <th>Question Dislikes</th>
+                <th>Answer Likes</th>
+                <th>Answer Dislikes</th>
                 <th>Total Score</th>
             </tr>
         </thead>
@@ -17,7 +21,13 @@
             {% for user in leaderboard %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ user.username }}</td> <!-- Assuming User model has a 'username' field -->
+                <td>{{ user.username }}</td>
+                <td>{{ user.questions_asked }}</td>
+                <td>{{ user.answers_provided }}</td>
+                <td>{{ user.question_likes }}</td>
+                <td>{{ user.question_dislikes }}</td>
+                <td>{{ user.answer_likes }}</td>
+                <td>{{ user.answer_dislikes }}</td>
                 <td>{{ user.total_score }}</td>
             </tr>
             {% endfor %}
