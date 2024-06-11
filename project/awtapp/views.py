@@ -36,52 +36,21 @@ def question_list(request):
     return render(request, 'questions/question_list.html', {'questions': questions})
 
 def question_detail(request, question_id):
-    # Retrieve the question object or return a 404 error if not found
     question = get_object_or_404(Question, id=question_id)
 
-    # Increment the views count by 1 using F expressions to avoid race conditions
     Question.objects.filter(id=question_id).update(views=F('views') + 1)
 
-    # Retrieve all answers for the question
-    answers = Answer.objects.filter(question_id=question_id)
-
-    # Dictionary to store comments for each answer
+    answer_ids = Answer.objects.filter(question_id=question_id)
     answer_comments = {}
-
-    for answer in answers:
-        # For each answer, get its comments and store in the dictionary
-        answer_comments[answer.id] = Comment.objects.filter(answer_id=answer.id)
-
-    # Get the current logged-in user
+    
+    for answer_id in answer_ids:
+        answer_comments[answer_id] = Comment.objects.filter(answer_id=answer_id)
+    
     user = request.user
-
-    # Check if the user has liked or disliked the question
-    user_liked_question = QuestionLike.objects.filter(question=question, user=user).exists()
-    user_disliked_question = QuestionDislike.objects.filter(question=question, user=user).exists()
-
-    # Dictionary to store like/dislike status for each answer
-    answer_likes_status = {}
-
-    for answer in answers:
-        # Check if the user has liked or disliked each answer
-        user_liked_answer = AnswerLike.objects.filter(answer=answer, user=user).exists()
-        user_disliked_answer = AnswerDislike.objects.filter(answer=answer, user=user).exists()
-        
-        # Store the like/dislike status in the dictionary
-        answer_likes_status[answer.id] = {
-            'user_liked': user_liked_answer,
-            'user_disliked': user_disliked_answer
-        }
-
-    # Render the template with the required context
-    return render(request, 'questions/question_detail.html', {
-        'question': question,
-        'answers': answers,
-        'answer_comments': answer_comments,
-        'user_liked_question': user_liked_question,
-        'user_disliked_question': user_disliked_question,
-        'answer_likes_status': answer_likes_status
-    })
+    user_liked = QuestionLike.objects.filter(question=question, user=user).exists()
+    user_disliked = QuestionDislike.objects.filter(question=question, user=user).exists()
+    
+    return render(request, 'questions/question_detail.html', {'question': question, 'answers': answer_ids, 'answer_comments': answer_comments, 'user_liked': user_liked, 'user_disliked': user_disliked})
 
 @login_required
 def post_question(request):
