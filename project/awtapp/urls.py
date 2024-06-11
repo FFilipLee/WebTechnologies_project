@@ -7,6 +7,7 @@ urlpatterns = [
     path('questions/<int:question_id>/', views.question_detail, name='question_detail'),
     path('questions/<int:question_id>/post_answer/', views.post_answer, name='post_answer'),
     path('answers/<int:answer_id>/post_comment/', views.post_comment, name='post_comment'),
+    path('answers/<int:answer_id>/like/', views.like_answer, name='like_answer'),
     path('ask/', views.post_question, name='post_question'),
     path('delete_answer/<int:answer_id>/', views.delete_answer, name='delete_answer'),
     path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
