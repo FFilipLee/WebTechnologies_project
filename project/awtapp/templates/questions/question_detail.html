@@ -110,16 +110,18 @@
             <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
                 Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
             </a>
-
+        
             <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
                 Dislike <span class="badge badge-light">{{ question.questiondislike_set.count }}</span>
             </a>
-
-            <a href="{% url 'delete_question' question.id %}" class="btn btn-red">
-                Delete <span class="badge badge-light"> </span>
-            </a>
-
-
+        
+            {% if request.user.is_authenticated %}
+                {% if question.user == request.user or request.user.is_superuser %}
+                    <a href="{% url 'delete_question' question.id %}" class="btn btn-red">
+                        Delete <span class="badge badge-light"></span>
+                    </a>
+                {% endif %}
+            {% endif %}
         </div>
 
         <div class="question">
@@ -147,9 +149,14 @@
                             Dislike <span class="badge badge-light">{{ answer.answerdislike_set.count }}</span>
                         </a>
             
-                        <a href="{% url 'delete_answer' answer.id %}" class="btn btn-red">
-                            Delete <span class="badge badge-light"> </span>
-                        </a>
+                        {% if request.user.is_authenticated %}
+                            {% if answer.user == request.user or request.user.is_superuser %}
+                                <a href="{% url 'delete_answer' answer.id %}" class="btn btn-red">
+                                    Delete <span class="badge badge-light"> </span>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
                         <button type="button" class="btn btn-info" onclick="toggleComments('comments-{{answer.id}}');">Show/Hide Comments</button>
                         <button type="button" class="btn btn-success" onclick="toggleCommentForm('commentForm-{{answer.id}}');">Make Comment</button>
                         <div id="comments-{{answer.id}}" style="display:none;">
