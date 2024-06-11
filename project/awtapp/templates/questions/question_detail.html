@@ -107,11 +107,11 @@
             <p>{{ question.content }}</p>
             <p>Posted by: {{ question.user }} on {{ question.postDate }}</p>
             <p>Views: <span id="questionViews">{{ question.views }}</span></p>
-            <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked_question %}active{% endif %}">
+            <a href="{% url 'like_question' question.id %}" class="btn btn-like {% if user_liked %}active{% endif %}">
                 Like <span class="badge badge-light">{{ question.questionlike_set.count }}</span>
             </a>
         
-            <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked_question %}active{% endif %}">
+            <a href="{% url 'dislike_question' question.id %}" class="btn btn-dislike {% if user_disliked %}active{% endif %}">
                 Dislike <span class="badge badge-light">{{ question.questiondislike_set.count }}</span>
             </a>
         
